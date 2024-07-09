@@ -9,6 +9,15 @@ class OrganisationSerializer(serializers.ModelSerializer):
         fields = ['orgId', 'name', 'description']
         extra_kwargs = {"orgId": {"read_only": True}}
 
+    def validate_name(self, value):
+        if not value:
+            raise serializers.ValidationError("Name field cannot be empty.")
+        return value
+    def validate_description(self, value):
+        if not value:
+            raise serializers.ValidationError("Description field cannot be empty.")
+        return value
+
 class AddUserToOrganizationSerializer(serializers.Serializer):
     userId = serializers.UUIDField(required=True, error_messages={"required": "userId is required"})
 
