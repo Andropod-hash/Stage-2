@@ -170,11 +170,13 @@ class OrganisationViewCreate(ListCreateAPIView):
                     "status": "success",
                     "message": "Organisation created successfully",
                     "data": {
-                        "organization": OrganisationSerializer(organization).data,
+                        "orgId": str(organization.orgId),  # Ensure orgId is a string
+                        "name": organization.name,          # Ensure name is a string
+                        "description": organization.description  # Ensure description is a string
                     },
                 }
                 return Response(response_data, status=status.HTTP_201_CREATED)
-            except Exception as e:
+            except Exception:
                 response_detail = {
                     "status": "Bad Request",
                     "message": "Client error",
@@ -186,20 +188,9 @@ class OrganisationViewCreate(ListCreateAPIView):
                 "status": "Bad Request",
                 "message": "Validation error",
                 "statusCode": 400,
-                "errors": serializer.errors,
+                "errors": serializer.errors
             }
             return Response(response_detail, status=status.HTTP_400_BAD_REQUEST)
-    
-    def list(self, request, *args, **kwargs):
-        response = super().list(request, *args, **kwargs)
-        response_detail = {
-            "status": "success",
-            "message": " retrieved successfully",
-            "data": {
-                "organisations": response.data, 
-            },
-        }
-        return Response(response_detail, status=status.HTTP_200_OK)
     
     # def list(self, request, *args, **kwargs):
     #     response = super().list(request, *args, **kwargs)
@@ -212,52 +203,7 @@ class OrganisationViewCreate(ListCreateAPIView):
     #     }
     #     return Response(response_detail, status=status.HTTP_200_OK)
 
-# class OrganisationViewCreate(ListCreateAPIView):
-#     serializer_class = OrganisationSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def get_queryset(self):
-#         return Organization.objects.filter(Q(created_by=self.request.user) | Q(members__userId=self.request.user.userId))
-
-#     def perform_create(self, serializer):
-#         user = self.request.user
-#         organization = serializer.save(created_by=user)
-#         user.organizations.add(organization)
-
-#     def create(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(data=request.data)
-#         if serializer.is_valid(raise_exception=False):
-#             try:
-#                 organization = serializer.save(created_by=request.user)
-#                 response_data = {
-#                     "status": "success",
-#                     "message": "Organisation created successfully",
-#                     "data": {
-#                         "orgId": organization.id,
-#                         "name": organization.name,
-#                         "description": organization.description,
-#                     },
-#                 }
-#                 return Response(response_data, status=status.HTTP_201_CREATED)
-#             except Exception as e:
-#                 response_detail = {
-#                     "status": "Bad Request",
-#                     "message": "Client error",
-#                     "statusCode": 400
-#                 }
-#                 return Response(response_detail, status=status.HTTP_400_BAD_REQUEST)
-#         return CustomSerializerErrorResponse(serializer).response
-
-#     def list(self, request, *args, **kwargs):
-#         response = super().list(request, *args, **kwargs)
-#         response_detail = {
-#             "status": "success",
-#             "message": "Organisations retrieved successfully",
-#             "data": {
-#                 "organisations": response.data,
-#             },
-#         }
-#         return Response(response_detail, status=status.HTTP_200_OK)
+# 
 
 class AddUserToOrganization(APIView):
     @swagger_auto_schema(request_body=AddUserToOrganizationSerializer)
