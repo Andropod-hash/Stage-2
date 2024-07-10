@@ -192,16 +192,16 @@ class OrganisationViewCreate(ListCreateAPIView):
             }
             return Response(response_detail, status=status.HTTP_400_BAD_REQUEST)
     
-    # def list(self, request, *args, **kwargs):
-    #     response = super().list(request, *args, **kwargs)
-    #     response_detail = {
-    #         "status": "success",
-    #         "message": " retrieved successfully",
-    #         "data": {
-    #             "organisations": response.data,
-    #         },
-    #     }
-    #     return Response(response_detail, status=status.HTTP_200_OK)
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+        response_detail = {
+            "status": "success",
+            "message": " retrieved successfully",
+            "data": {
+                "organisations": response.data,
+            },
+        }
+        return Response(response_detail, status=status.HTTP_200_OK)
 
 # 
 
